@@ -59,7 +59,7 @@
         android:textSize="14sp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/tvAnimatinKind"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/nextButton" />
 
     <TextView
         android:id="@+id/tvAnimatinKind"
@@ -86,13 +86,76 @@
         android:id="@+id/tvPage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:layout_gravity="left"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/black"
+        android:gravity="center"
+        android:text="10"
         android:textColor="@android:color/white"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/animView"
+        android:layout_width="60dp"
+        android:layout_height="400dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPage" />
+
+    <ListView
+        android:id="@+id/actioAnimLv"
+        android:layout_width="60dp"
+        android:layout_height="300dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/init_button" />
+
+    <SeekBar
+        android:id="@+id/seekBarTextSize"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="32dp"
+        android:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewSBtextSize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:elevation="10dp"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/seekBarTextSize"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <SeekBar
+        android:id="@+id/seekBarDuration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="4dp"
+        android:elevation="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/seekBarTextviewDuaration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:elevation="10dp"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarDuration" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

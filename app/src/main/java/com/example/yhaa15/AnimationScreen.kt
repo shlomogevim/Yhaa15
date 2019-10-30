@@ -2,8 +2,12 @@ package com.example.yhaa15
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.ArrayAdapter
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_animation_screen.*
 import kotlinx.android.synthetic.main.current_position_layout.*
 import kotlinx.android.synthetic.main.god_layout.*
@@ -14,10 +18,11 @@ class AnimationScreen : AppCompatActivity() {
     companion object {
         const val TALKER = "talker"
         const val STYLE = "style"
+        const val OPERATELIST = "opreratelist"
     }
 
     lateinit var talkList: ArrayList<Talker>
-    lateinit var operateList:ArrayList<List<Int>>
+    lateinit var operateList: ArrayList<List<Int>>
 
 
     private var manMode = true
@@ -29,10 +34,50 @@ class AnimationScreen : AppCompatActivity() {
     val CURRENT_SPEAKER = "currentSpeakertext10"
     lateinit var myPref: SharedPreferences
     lateinit var editor: SharedPreferences.Editor
+    lateinit var animList: ArrayList<String>
+    lateinit var actionAnimList:ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_animation_screen)
+        initValues()
+
+        Page.createBasicStyle()
+
+        updateTalkList()
+
+      //  saveData()
+       retriveData()
+
+        generalOperation()     // Let's play
+    }
+
+    private fun saveData() {
+        var gson=Gson()
+        var jsonString=gson.toJson(operateList)
+        editor.putString(OPERATELIST,jsonString)
+        editor.apply()
+
+    }
+
+    private fun retriveData() {
+        operateList.clear()
+        var gson=Gson()
+        var jsonString=myPref.getString(OPERATELIST,null)
+        var type = object:TypeToken<ArrayList<List<Int>>>() {}.type
+        operateList=gson.fromJson(jsonString,type)
+        if (operateList==null){
+
+        }
+
+    }
+
+
+
+
+    private fun initValues() {
+        seekBarTextSize.max=200
+        seekBarDuration.max=5000
         myPref = getSharedPreferences(PREFS_NAME, 0)
         editor = myPref.edit()
         counterStep = myPref.getInt(CURRENT_SPEAKER, 1)
@@ -42,13 +87,15 @@ class AnimationScreen : AppCompatActivity() {
         @Suppress("UNCHECKED_CAST")
         talkList = intent.getSerializableExtra(TALKER) as ArrayList<Talker>
         @Suppress("UNCHECKED_CAST")
-        operateList=intent.getSerializableExtra(STYLE) as ArrayList<List<Int>>
-
-        Page.createBasicStyle()
-
-        updateTalkList()
-
-        generalOperation()     // Let's play
+        operateList = intent.getSerializableExtra(STYLE) as ArrayList<List<Int>>
+        animList =
+            arrayListOf("200", "210", "220", "230", "240", "250", "260", "270", "280", "290", "300")
+        actionAnimList =
+            arrayListOf("4","10", "20", "30", "40", "50", "60")
+        var adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, animList)
+        animView.adapter = adapter
+        var adapter1 = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, actionAnimList)
+        actioAnimLv.adapter=adapter1
     }
 
 
@@ -64,16 +111,10 @@ class AnimationScreen : AppCompatActivity() {
         updateTitleTalkerSituation(talker)
         animationInAction1.excuteTalker(talker)
 
-        /* if (talker.whoSpeake == "man") {
-             animationInAction1.manTalk(talker)
-         } else {
-             animationInAction1.godTalk(talker)
-         }*/
     }
 
 
-
-    fun enterValueToTalkList(ind: Int, talker: Talker): Talker {
+    fun enterDefaltValueToTalkList(ind: Int, talker: Talker): Talker {
         if (ind < operateList.size) {
             val item = operateList[ind]
             talker.styleNum = item[0]
@@ -88,7 +129,7 @@ class AnimationScreen : AppCompatActivity() {
                 talker.textSize = 28f
             }
             if (talker.whoSpeake == "god") {
-                talker.styleNum = 400
+                talker.styleNum = 200
                 talker.animNum = 2
                 talker.dur = 2000L
                 talker.textSize = 48f
@@ -101,7 +142,7 @@ class AnimationScreen : AppCompatActivity() {
     private fun updateTalkList() {
         //   operateList = FileStyling.initFileText11()
         for (ind in 1 until talkList.size) {
-            talkList[ind] = enterValueToTalkList(ind, talkList[ind])
+            talkList[ind] = enterDefaltValueToTalkList(ind, talkList[ind])
         }
     }
 // the idea is to isolate the text item from the style item for ease to correct them
@@ -112,11 +153,39 @@ class AnimationScreen : AppCompatActivity() {
                 ">$num<  NumL->$lines style->$styleNum anim->$animNum dur->$dur $whoSpeake"
             tvAnimatinKind.text = text
         }
-        tvPage.text=counterStep.toString()
+        tvPage.text = counterStep.toString()
     }
 
 
     private fun buttonZom() {
+ seekBarDuration.setOnSeekBarChangeListener(object :SeekBar.OnSeekBarChangeListener{
+     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+         seekBarTextviewDuaration.text=progress.toString()
+     }
+
+     override fun onStartTrackingTouch(seekBar: SeekBar?) {
+     }
+
+     override fun onStopTrackingTouch(seekBar: SeekBar?) {
+     }
+
+ })
+
+
+        seekBarTextSize.setOnSeekBarChangeListener(object :SeekBar.OnSeekBarChangeListener{
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                textViewSBtextSize.text=progress.toString()
+
+            }
+
+        })
 
         goddy.setOnClickListener {
             if (manMode) {
